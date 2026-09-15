@@ -121,6 +121,7 @@ Your identity is saved as part of every commit you make. Set it with `git config
 
    The name and email you set globally should be returned.
 
+
 > **Tool — Text Editing with Git (optional):** Git sometimes opens a text editor called **Vi** and waits for you to save before continuing. To exit Vi, hit `ESC`, type `:q`, then press `Enter`.
 >
 > You can also change the default text editor in Git. For example, to use Visual Studio Code:
@@ -380,6 +381,17 @@ git push [shortname] [branchname]
 
 For COSC130, `[branchname]` defaults to `main`, so `git push` alone is usually enough.
 
+**Note for first time pushing**
+Set up credentials so that you do not have to input password every single time:
+
+   ```terminal
+   git config --global credential.helper manager
+   ```
+```terminal
+
+
+Then do a git push, it should pop up a login window, you're done.
+
 **Example:**
 
 ```terminal
@@ -444,7 +456,7 @@ Create your `.gitignore` file in your text editor and save it in your repository
 
 ## 12. Wrap Up
 
-This tutorial only scratched the surface of Git.
+This tutorial only scratched the surface of Git. Moreover, I will upload course lectures to Git, so you can clone this repository: https://github.com/ssthapit-smcm/COSC130-Course.git
 
 ### What Makes GitHub Useful
 
