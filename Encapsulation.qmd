@@ -1,0 +1,540 @@
+---
+title: "OOP"
+format: 
+  revealjs:
+    theme: simple
+    slide-number: true
+    embed-resources: true 
+    scrollable: true
+#   pdf:
+#     output-file: "OOP"
+---
+
+## Quiz2
+
+---
+
+## Assignments
+
+ - Assignment 1 Due tonight
+ - Assignment 2 Due Thursday at 11:45 PM
+
+---
+
+## Revising Method Overloading
+
+---
+
+## How It Works: The Signature
+
+- The **method signature** is composed of the **method name** and the **parameter list** (the number, data types, and order of the parameters).
+    
+- For example, `public void printMessage(String message)` and `public void printMessage(int number)` are two different method signatures.
+    
+- The compiler uses this signature to uniquely identify which version of the method to execute.
+
+---
+
+
+## Overloading with Different Number of Parameters
+
+- Overload methods by changing the **number of parameters**.
+    
+- This is useful for providing flexibility.
+    
+
+```java
+public class Shape {
+    // Calculate area with radius
+    public double calculateArea(double radius) {
+        return 3.14 * radius * radius;
+    }
+
+    // Overloaded method to calculate area of a rectangle
+    public double calculateArea(double length, double width) {
+        return length * height;
+    }
+}
+```
+
+---
+
+## Overloading with Different Parameter Order
+
+- The **order of the parameters** also matters to the method signature.
+    
+- Even if the data types are the same, a different order creates a unique signature.
+
+
+```java
+public class DataProcessor {
+    // Method 1: Processes an integer followed by a string
+    public void process(int id, String name) {
+        System.out.println("Processing ID: " + id + " and Name: " + name);
+    }
+
+    // Method 2: Processes a string followed by an integer
+    public void process(String name, int id) {
+        System.out.println("Processing Name: " + name + " and ID: " + id);
+    }
+}
+```
+
+---
+
+## Important Rule: Return Type Doesn't Matter
+
+- **You cannot overload a method based on its return type alone.**
+    
+- The compiler can't tell which method to call if the parameter list is identical.
+    
+
+```java
+public class MyClass {
+    public int getValue() { // This is valid
+        return 1;
+    }
+
+    // public double getValue() { // THIS IS AN ERROR!
+    //    return 1.0;
+    // }
+}
+```
+---
+
+## Overloading Constructors
+
+
+```java
+public class Dog {
+    String name;
+    int age;
+
+    // Overloaded constructor — does the actual work
+    public Dog(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    // Default constructor — delegates to the other constructor
+    public Dog() {
+        this("Unknown", 0);
+    }
+}
+```
+
+# OOP Design
+
+---
+
+## Don't Repeat Yourself (DRY)
+
+ - If the same logic appears in multiple places, it should live in exactly one place, and everything else should call it.
+
+ - Redundant code is a maintenance risk: if you fix a bug or change behavior, you have to *remember to update it everywhere* it was duplicated.
+
+---
+
+```java
+public class Rectangle {
+    double width;
+    double height;
+
+    // Most specific constructor — does the actual work
+    public Rectangle(double width, double height) {
+        this.width = width;
+        this.height = height;
+    }
+
+    // A square is just a rectangle with equal sides
+    public Rectangle(double side) {
+        this(side, side);
+    }
+
+    // Default: unit square
+    public Rectangle() {
+        this(1.0);
+    }
+}
+```
+
+---
+
+## No unnecessary functionality
+
+ - Don't add methods or fields "just in case." Every piece of functionality should have a clear use.
+
+ - Redundant code is a maintenance risk: if you fix a bug or change behavior, you have to *remember to update it everywhere* it was duplicated.
+
+---
+
+## Abstraction
+
+--- 
+
+ - What is abstraction
+    - Abstraction is the process of hiding the complex implementation details and showing only the essential features of an object.
+
+    - It focuses on what an object does, not how it does it.
+
+---
+
+## Abstraction: APIs as an Example
+
+- Every time you use a Java library method, you're relying on abstraction.
+
+- You call methods like `Math.sqrt()`, `ArrayList.add()`, or `Scanner.nextInt()` without ever seeing or needing to see the code inside them.
+
+- The **API** (Application Programming Interface) is the contract: it tells you *what* a method does, what to pass in, and what you get back. The implementation stays hidden.
+
+---
+
+## Abstraction in Action: `Math.sqrt()`
+
+```java
+double result = Math.sqrt(25.0); // result is 5.0
+```
+
+- You know: pass in a `double`, get back its square root.
+
+- You don't know (and don't need to know): whether it uses Newton's method, a lookup table, or a hardware instruction under the hood.
+
+- If Java's developers rewrote `sqrt()` internally tomorrow to be faster, your code wouldn't change at all.
+
+---
+
+### Why abstraction?
+
+---
+
+## Why This Matters
+
+ - Abstraction makes large-scale software possible: no one could build a complex program if they had to understand every line of every library they use.
+
+ - Because only the essential interface is exposed, the implementation can change in the future without breaking anything that depends on it.
+
+ - This is why you should write **Javadocs**, so that other can use your code easily.
+
+---
+
+
+## Encapsulation
+
+---
+
+ - What is Encapsulation?
+    - Hiding the implementation details of an object from the clients of the object
+ - Why Use Encapsulation?
+   - Protects data from unwanted access
+   - Clients cannot directly access of modify its internal workings – nor do they need to do so
+   - Encapsulation leads to abstraction
+   - Can later change the internal workings of the class without modifying client code
+
+---
+
+### How to encapsulate?
+
+ - Private fields
+    - Private fields are visible inside the class but are not visible outside the class
+    - Field Syntax Template
+
+`private <type> <name>;`
+
+`private <type> <name> = <value>;`
+
+
+ - Accessor and MutatorMethods
+    - Write accessor and mutatormethods to accessand modifythe private fieldsof a class
+    - Maintain encapsulation because class controls the access to internal data
+
+--
+
+### Syntax
+
+```java
+public class <class name> {
+    // fields
+    private <type> <name>;
+    ...
+
+    // constructors
+    public <class name>(<type> <name>, ..., <type> <name>) {
+        <statement>;
+        ...
+    }
+
+    // methods
+    public <type> <name>(<type> <name>, ..., <type> <name>) {
+        <statement>;
+        ...
+    }
+}
+```
+
+---
+
+
+### Access Modifiers
+
+ - `public`
+    - Visible to all classes
+ - `private`
+    - Visible only to one class (thisclass)
+ - `protected`
+    - Visible to this class and all of its subclasses, as well as to all classes in the same package as this class.
+ - `default`
+    - Visible to all classes in the same package as this class.
+
+---
+
+
+### Accessor (a.k.a. "getter")
+
+ - A method that reads and returns the value of a private field, without changing it.
+ - By convention named `getX()` (or `isX()` for booleans).
+ - Example: `getTitle()`, `getLocation()`, `isCheckedOut()`.
+
+---
+
+### Mutator (a.k.a. "setter")
+
+ - A method that changes the value of a private field (or otherwise modifies the object's state).
+ - By convention named `setX()` but a mutator doesn't have to follow the setX() naming pattern if a more meaningful operation name better describes what's happening.
+ - Example: `setLocation(int loc)`, `checkOut(String dueDate)`.
+
+---
+
+### Class Invariants
+
+
+ - A property that is true of every object of a class
+ - An assertion about an object’s state that is true for the lifetime of that object
+ - Encapsulated objects can have constraints on their state
+ - Can enforce within public methods
+ - *Example: A Book’s title and author (almost) never changes Location of Bookcannot be negative*
+
+---
+
+```java
+public Book(String title, String author, int pubYear, int location) {
+    this.title = title;
+    this.author = author;
+    this.pubYear = pubYear;
+    setLocation(location); // delegate to the mutator so validation runs
+    this.checkedOut = null;
+    this.dueDate = null;
+}
+
+// Set location of a book
+public void setLocation(int loc) {
+    if (loc < 0) {
+        throw new IllegalArgumentException();
+    }
+    location = loc;
+}
+```
+
+---
+
+### Encapsulating Book: Accessors and Mutators
+
+```java
+public class Book {
+    private String title;
+    private String author;
+    private int pubYear;
+    private int location;
+    private boolean checkedOut;
+    private String dueDate;
+
+    public Book(String title, String author, int pubYear, int location) {
+        this.title = title;
+        this.author = author;
+        this.pubYear = pubYear;
+        setLocation(location); // validation happens in the setter
+        this.checkedOut = false;
+        this.dueDate = null;
+    }
+
+    // Accessors only -- title and author don't change after construction
+    public String getTitle() {
+        return title;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public int getPubYear() {
+        return pubYear;
+    }
+
+    // Accessor and mutator for location
+    public int getLocation() {
+        return location;
+    }
+
+    public void setLocation(int loc) {
+        if (loc < 0) {
+            throw new IllegalArgumentException("Location cannot be negative");
+        }
+        location = loc;
+    }
+
+    // Accessor for checked-out status
+    public boolean isCheckedOut() {
+        return checkedOut;
+    }
+
+    public String getDueDate() {
+        return dueDate;
+    }
+
+    // Mutators for checked-out status -- checkOut and checkIn,
+    // instead of a general setCheckedOut(), enforce valid state transitions
+    public void checkOut(String dueDate) {
+        if (checkedOut) {
+            throw new IllegalStateException("Book is already checked out");
+        }
+        this.checkedOut = true;
+        this.dueDate = dueDate;
+    }
+
+    public void checkIn() {
+        if (!checkedOut) {
+            throw new IllegalStateException("Book is not checked out");
+        }
+        this.checkedOut = false;
+        this.dueDate = null;
+    }
+}
+```
+
+---
+
+- `checkOut()` and `checkIn()` are **mutators** as they enforce the class invariant that a book can't be checked out twice in a row or checked in when it was never checked out.
+
+- This is the pattern behind "omit unused mutators": instead of exposing raw setters for every field, expose the *operations* that make sense for the object, and let those operations protect the invariant.
+
+---
+
+### Immutable Objects
+
+ - An object whose state cannot be modified
+  - No mutators
+ - To create a true immutable object, the class and fields should also be final
+
+---
+
+### Encapsulation Summary
+
+ - **What is Encapsulation?**
+    - Hiding the implementation details of an object from the clients of the object
+ - **Why Use Encapsulation?**
+   - Protects data from unwanted access
+   - Clients cannot directly access of modify its internal workings – nor do they need to do so
+   - Encapsulation leads to abstraction
+   - Can later change the internal workings of the class without modifying client code
+
+---
+
+## Limit Object Creation to the Constructor
+
+ - An object's state should be fully established the moment it's constructed rather than pieced together through a series of method calls afterward.
+ - Avoid patterns like creating a "blank" object and then calling several setters to fill it in; that leaves a window where the object exists in an incomplete or invalid state.
+ - If an object needs several related pieces of data to make sense, require them all in the constructor (or in a well-designed set of overloaded constructors).
+
+--- 
+
+## Cohesion: One Class, One Job
+
+ - Cohesion is the extent to which a class represents a single, well-defined abstraction.
+ - A highly cohesive class does one thing only which also makes it easier to reuse in other programs.
+ - Example: a Book class should represent only what a book knows and does (title, author, page count). It should not also handle console input/output — that's a separate responsibility.
+
+
+--- 
+
+## Coupling
+
+ - Coupling is the degree to which one part of a program depends on another.
+ - Classes should avoid unnecessary dependencies on each other.
+   - The less two classes need to know about each other's internals, the easier each is to change independently.
+ - Related data and behavior should live together in the same class.
+ - **Reduce unnecessary coupling**.
+
+
+# Exercise
+
+---
+
+Design and implement an `Employee` class with the following rules. Your class should compile and run correctly against the `main` method described at the end.
+
+**Rules**
+
+- **`employeeId`** (String) and **`hireDate`** (String) — set once in the constructor and never change afterward. *No setters only Accessors.*
+
+- **`name`** (String) — the employee's full name, in the format `"First Last"` or `"First Middle Last"`. This field **can** change (e.g., legal name changes), but only to a valid value: it must never be set to `null` or a blank/empty string. Provide a `setName(String newName)` method that enforces this and rejects invalid input (throw an exception or print an error).
+
+- **`firstName`**, **`lastName`** (String) and **`middleInitial`** (String) — these are **derived entirely from `name`** and must never be passed in directly, by the constructor or setters. Whenever `name` is set (in the constructor or via `setName()`), these three fields should be automatically re-derived from it:
+  - `firstName` is the first word of `name`.
+  - `lastName` is the last word of `name`.
+  - `middleInitial` is the first letter of the middle word followed by a period (e.g., `"J."`) if a middle name is present, or an **empty string** `""` if there is no middle name.
+  - Provide getters for all three. **No setters** the only way to change them is indirectly, by changing `name`.
+
+- **`salary`** (double) — must always be greater than zero; the constructor should reject a non-positive value. 
+
+- **`hoursWorkedThisWeek`** (int) — must always stay within `[0, 168]` (hours in a week). There is no direct setter. The only way to change it is through a `logHours(int hours)` method, which adds `hours` to the current total but validates that the *resulting* total stays within `[0, 168]` before applying the change, rejecting the update otherwise.
+
+
+- `calculatePay()` should return the employee's pay for the week: base pay is `salary / 52`.
+
+---
+
+Check the starter code in [lab-encapsulation](https://github.com/ssthapit-smcm/lab-encapsulation.git)
+https://github.com/ssthapit-smcm/lab-encapsulation.git
+
+**Compiling and Running:** `Employee` Lab
+
+**Folder structure:**
+
+```
+lab-encapsulation/
+├── src/
+│   ├── Employee.java
+│   └── EmployeeTest.java
+└── bin/
+```
+
+Run these commands from the `lab-encapsulation` folder (not from inside `src`).
+
+1. Compile `Employee.java` first
+
+```
+javac -d bin src/Employee.java
+```
+
+
+2. Compile `EmployeeTest.java`
+
+```
+javac -d bin -cp bin src/EmployeeTest.java
+```
+
+3. Run
+
+```
+java -cp bin EmployeeTest
+```
+
+If you edit `Employee.java`, repeat steps 1–3 to recompile before running again.
+
+---
+
+
+
+### Next
+
+ - Desiging classes (noun and verbs)
+ - Interacting classes
+ - Inheritence

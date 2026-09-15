@@ -1,0 +1,8 @@
+# Ignore all HTML files
+*.html
+
+# Ignore all PDF files
+*.pdf
+
+# Ignore a specific "pdfs" folder anywhere in the repo
+pdfs/
