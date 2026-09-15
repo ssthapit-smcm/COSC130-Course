@@ -123,6 +123,13 @@ public class Dog {
 }
 ```
 
+
+# Git
+
+ - download the git tutorial from the Blackboard
+
+
+
 # OOP Design
 
 ---
