@@ -171,15 +171,13 @@ public class Rectangle {
 
  - Don't add methods or fields "just in case." Every piece of functionality should have a clear use.
 
- - Redundant code is a maintenance risk: if you fix a bug or change behavior, you have to *remember to update it everywhere* it was duplicated.
-
 ---
 
 ## Abstraction
 
 --- 
 
- - What is abstraction
+ - **What is abstraction?**
     - Abstraction is the process of hiding the complex implementation details and showing only the essential features of an object.
 
     - It focuses on what an object does, not how it does it.
