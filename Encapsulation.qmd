@@ -1,5 +1,5 @@
 ---
-title: "OOP"
+title: "Encapsulation"
 format: 
   revealjs:
     theme: simple
@@ -248,11 +248,11 @@ double result = Math.sqrt(25.0); // result is 5.0
 `private <type> <name> = <value>;`
 
 
- - Accessor and MutatorMethods
-    - Write accessor and mutatormethods to accessand modifythe private fieldsof a class
+ - Accessor and Mutator Methods
+    - Write accessor and mutator methods to access and modify the private fields of a class
     - Maintain encapsulation because class controls the access to internal data
 
---
+---
 
 ### Syntax
 
@@ -284,7 +284,7 @@ public class <class name> {
  - `public`
     - Visible to all classes
  - `private`
-    - Visible only to one class (thisclass)
+    - Visible only to one class (this class)
  - `protected`
     - Visible to this class and all of its subclasses, as well as to all classes in the same package as this class.
  - `default`

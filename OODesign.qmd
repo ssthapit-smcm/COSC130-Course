@@ -1,0 +1,38 @@
+---
+title: "Encapsulation"
+format: 
+  revealjs:
+    theme: simple
+    slide-number: true
+    embed-resources: true 
+    scrollable: true
+#   pdf:
+#     output-file: "OOP"
+---
+
+## Encapsulation
+
+ - What is Encapsulation?
+    - Hiding the implementation details of an object from the clients of the object
+ - Why Use Encapsulation?
+   - Protects data from unwanted access
+   - Clients cannot directly access of modify its internal workings – nor do they need to do so
+   - Encapsulation leads to abstraction
+   - Can later change the internal workings of the class without modifying client code
+
+---
+
+
+### Learning Goals
+
+ - Handling Exceptions
+ - Object Oriented Design
+ - Choosing Classes
+ - UML
+
+
+---
+
+### Next Class
+ - Aggregation and Composition (contd.)
+ - Introduction to Inheritance
