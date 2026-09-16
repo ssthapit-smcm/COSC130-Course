@@ -25,10 +25,14 @@ format:
 
 ### Learning Goals
 
- - Handling Exceptions
+ - Handling Exceptions (try catch)
  - Object Oriented Design
  - Choosing Classes
  - UML
+
+---
+
+Assignment (design from FE)
 
 
 ---
