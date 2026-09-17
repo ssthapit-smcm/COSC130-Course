@@ -710,14 +710,16 @@ The following are helpful hints for working on your design:
 4. Refine your design. Write headers for all methods
 5. Then implement the methods. 
 
+---
 
+### Read Chapter 11 
 
+Java Programming From the Ground Up (Chapter 11) pdf in assignment
 
-Assignment (design from FE)
+**Try Assignment 3**
 
 
 ---
 
 ### Next Class
- - Aggregation and Composition (contd.)
- - Introduction to Inheritance
+ - Inheritance and polymorphism
