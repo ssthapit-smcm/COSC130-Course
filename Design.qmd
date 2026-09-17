@@ -1,0 +1,214 @@
+---
+title: Comprehensive Exercise
+description: Design
+tags:  [software engineering, software lifecycle, CS1, CSC, requirements]
+navigation: on
+pagegroup: comprehensive-exercise-s20
+---
+# Object Oriented Design
+
+For object-oriented design describes the classes, including their state and behaviors, and the relationship between those classes. We start by discovering classes and their state.  The next step is to determine the responsibilities of each class.  Finally, we describe the relationships between each class.  
+
+There are several diagram types that describe low-level design. 
+
+* **Class Diagrams**: Class diagrams are a type of UML diagram, which describe the classes, states, behaviors, and relationships between classes for a software system. (Described more below)
+* **Control-flow Diagrams**: Control-flow diagrams model the flow-oriented elements of a software system.  Control-flow diagrams can model the flow of control between methods or within a method and may be used to estimate the number of unit tests needed to fully exercise all paths in a method.  
+* **State Diagrams**: State diagrams describe the behavioral elements of a software system.  State diagrams are frequently used to model finite state machines and show how inputs to the system can change the internal state of a class.  State diagrams are typically implemented using the State Pattern.
+
+### Class Diagrams
+Class diagrams are a type of UML diagram, which describe the classes, states, behaviors, and relationships between classes for a software system.  When analyzing requirements, we identify *nouns* which could represent objects or an object's state and *verbs* which could represent a class' behaviors.  We then create a UML diagram to represent classes as an abstraction of a single responsibility and the relationships between classes.
+
+__Supporting tool:__ UML Editors
+
+  * [Dia](http://dia-installer.de/) - Creates UML diagrams, including class diagrams.
+  * [UMLetino](http://www.umlet.com/umletino/umletino.html) - Online tool with text based properties that can be exported/imported in XML.
+  * [PlantUML](http://plantuml.com/) - Tool that lets you "program" UML diagrams.
+  * [Draw.io](https://www.draw.io/) - Online tool to draw diagrams
+  * [LucidChart](https://www.lucidchart.com/) - A commercial UML and diagramming tool that is free for students.  You must use your NCSU email address to register.
+
+
+#### Classes
+In a UML class diagram, classes are represented by a box divided into three sections stacked vertically.  The top section contains the class name, and in some diagrams may also include the package name.  The middle section contains the class' state or fields.  The bottom section lists the class' behavior.  
+
+![Event class](images/design/EventClass.gif)
+
+The state and behaviors of a class are written so that you can directly translate them to the code for fields and methods.  Both state and behaviors have a leading symbol that represents the visibility of the item.  A `+` represents public, `-` represents private, `#` represents package, and no symbol represents default access.  
+
+* public: Any class can use the field or method through an instance of the object or the class itself (if the field or method is static).
+* private: No external class can use the field or method.
+* protected: An external class that is a subclass of the given class or in the same package as the given class can use the field or method through an instance of the object or the class itself (if the field or method is static).
+* default: An external class that is in the same package as the given class can use the field or method through an instance of the object or the class itself (if the field or method is static).
+
+The visibility is followed by the name of the element.  For example, there is a field named `eventName` and two methods named `isConflict`.  A method's name is followed by parentheses that may include a parameter list.  The parameter list could just list the types of the parameters in order.  The parameters may also include names.  If so, the name is listed first, followed by a colon (e.g., `:`), then the type.
+
+The type of the state or behaviors is listed at the end of the line following a colon (e.g., `:`).  The method's type is the return type, which means the method can also be treated as that type in code!
+
+A static field or method (e.g., the main method) is annotated with an underline.  There is not a specific notation for final fields.
+
+![GUI with main method](images/design/GUI.jpg)
+
+
+
+
+#### Composition (has-a)
+A composition relationship is when one class has or uses an instance of another class.  There are several connectors that are used to model a composition relationship depending on the nature or strength of the relationship.  All connectors, except the dependency connector, represent when a class has a field (is a container) that is an instance of another class (the contained).  That means the connector is annotated with information about the field like the field name.  Since the connector represents the field, it is redundant to list the field in the container class.  The connector may also be annotated with numbers that represent the multiplicity of the connection.  If there is only a single instance of the contained in the container, the multiplicity is noted as a 1.  If there are multiple objects of the contained type in the container, the multiplicity is noted as 0..*, or zero to many.  That means the container stores the contained type in some type of collection like an array or object from the Java Collections Framework.
+
+* **Association Connector**: An association connector is a solid line between the container and the contained.  If the relationship is bi-directional, which means that each class contains an instdesign/ance or collection of the other, the connector is a solid line.  The connector is annotated with the field names for each class.  In the example below, `Course` would have a field called `enrolledStudents` which would contain a collection of `Student`s.  `Student` would have a field called `courseSchedule` containing a collection of `Course`s.design/
+
+  ![Bi-directional association](images/design/bi-association.jpg)
+
+  If the relationship is uni-directional, the arrow points to the contained class.  In the example below, `Schedule` has a field called `events` which would contain a collection of `Event`s.
+  
+  ![Uni-directional association](images/uni-association.jpg)
+  
+* **Aggregation Connector**: An aggregation connector is a solid line between the container and the contained with an open diamond at the end next to the container.  An aggregation connector models a whole-part relationship where the contained class represents a part of the container or whole class where the part can exist separate from the whole.  For example, a car has wheels or the wheel is part of a car.  But the wheel can exist separate from the car.  In an above example, we showed that a schedule has events.  If we consider a schedule as a whole that is made up of events, the more appropriate connector for the relationship would be aggregation.
+
+  ![Aggregation](images/design/aggregation.jpg)
+
+* **Composition Connector**: A composition connector is a solid line between the container and the contained with a solid diamond at the end next to the container.  Like an aggregation connector, a composition connector models a whole-part relationships where the contained class represents a part of the container or the whole class.  Unlike the aggregation connector, a composition connector should be used when the part cannot exist separate from the whole or when the whole controls the entire life cycle of the part.  For example, a line item doesn't exist separate from an invoice.  If we consider a schedule as controlling the life cycle of events and that an event cannot exist outside of a schedule, we could model the relationship using a composition connector.  A composition connector may be used to model inner classes since the outer class controls the life cycle of the inner class.
+
+  ![Composition](images/design/composition.jpg)
+  
+* **Dependency Connector**: A dependency connector is a dashed line between the container and the contained.  The arrow points to the contained.  A dependency connector is used to show when a class uses an instance of another class as a local variable or a parameter type, but not as a field.  Since there are usually many dependencies between classes in a design, the dependency connector is frequently omitted from class diagrams.  
+
+##  UML Diagrams  
+
+
+*  UML: Unified Modeling Language
+
+    *  Models object-oriented software
+    *  Convergence from three earlier modeling languages
+
+        *  OMT (James Rumbaugh)
+        *  OOSE (Ivar Jacobson)
+        *  Booch (Grady Booch)
+
+
+*  Overseen by the Object Mentor Group (OMG):<br> ([www.omg.org](www.omg.org){:target="_blank"})
+*  Access modifiers
+
+    *  `-`: private
+    *  `+`: public
+
+
+
+
+
+![Student class UML](images/design/StudentClass.png)
+ 
+
+##  Class Design  
+(References: (1) A. Riel, *Object-Oriented Design Heuristics*, 1996. and (2) S. Reges and M. Stepp, *Building Java Programs: A Back to Basics Approach*, 3rd Edition.)
+
+
+*  Do not provide any functionality that does not have a clear use
+*  Omit mutators that have no use
+*  Limit object creation to the constructor
+*  "Classes should be immutable unless there’s a very good reason to make them mutable... If a class cannot be made immutable, limit it’s mutability as much as possible."  - Joshua Bloch
+*  Classes should have cohesion
+
+    *  The extent to which the code for a class represents a single abstraction
+    *  Allows for reusability of the class in other programs
+    *  For example
+
+        *  The `Book` class represents only things a book can do and knows.
+        *  A `Book` should not perform console input and output
+
+
+*  Classes should not have unnecessary dependencies
+
+    *  Coupling is the degree to which one part of a program depends on another
+    *  Related data and behavior should be in the same place (same class)
+
+
+
+
+ 
+
+##  Principles of Object-Oriented Programming  
+
+(Reference: R. Bravaco and S. Simonson, *Java Programming: From the Ground Up*, 1st edition.)
+
+*Problem Statement*
+
+
+*   Need to make important design decisions prior to attempting to implement.
+*   "Usually, there is no single best set of classes for a particular application, and hence you should not look for the ‘right answer’; however, some designs are better than others."
+*   "Program design is not linear, it is iterative.”
+
+
+*Simple Design Process*
+
+
+*  Determine the classes.
+*  Determine the responsibilities of each class.
+*  Determine the interactions and collaborations among the classes.
+
+
+ 
+
+*Determine the Classes*
+
+
+*  "Just as a noun is a person, place, or thing, so is an object.”
+*  Begin by noting the nouns in the problem statement.
+*  These nouns give us a good starting point for considering possible classes.
+
+    *  Not all nouns will become classes
+    *  Not all classes will correspond to nouns of problem statement.
+
+
+
+* Determine Responsibilities of Each Class*
+
+
+*  "As the nouns indicate classes, the verbs of the problem statement help determine class responsibilities.”
+*  Consider:
+
+    *  What service does the class provide?
+    *  What is each class’s responsibility?
+    *  What are the actions and behaviors of each class?
+    *  What attributes/fields?
+
+
+
+ 
+
+
+##  Interacting Classes  
+
+
+
+
+
+![Roster UML](images/design/RosterUML.png)
+
+Code: [interacting classes](blackboardlink){:target="_blank"}
+
+---
+
+## Hints & Suggestions
+
+The following are helpful hints for working on your design:
+
+1. Determine the classes that your implementation will use. 
+    * Begin by noting the nouns in the requirements/analysis documentation (or problem statement).
+    * These nouns give us a good starting point for considering possible classes.
+    * Not all nouns will become classes. Some nouns may become attributes/fields (see 3). Other nouns may not become classes or attributes/fields.
+    * Not all classes will correspond to nouns of problem statement.
+    * Once you have a list of possible classes, consider different design options along with the pros and cons of each. We often do not come up with the best design on our first attempt.
+2. Determine the methods for each class. 
+    * "As the nouns indicate classes, the verbs of the problem statement help determine class responsibilities."
+    * Consider:
+        * What service does the class provide?
+        * What is each class’s responsibility?
+        * What are the actions and behaviors of each class?
+        * What attributes/fields used in the methods?
+    * Not all verbs will become methods.
+    * Not all methods will correspond to verbs in the problem statements.
+3. Determine the attributes/fields of each class by observing which classes need to send messages to which.
+    * Nouns can also help with these
+    * Remember, not all nouns will become classes or attributes/fields.
+    * Not all attributes/fields will correspond to nouns in the problem statement.
+4. Refine your design. Write headers for all methods
+5. Then implement the methods. 
