@@ -8,6 +8,12 @@ format:
     scrollable: true
 ---
 
+## Assignments
+
+ - Assignment 3  Due Sept 24 at 11:45 PM
+
+---
+
 ## Agenda
 
 1. **The Problem:** Code Duplication & Maintenance
@@ -101,6 +107,8 @@ We use specific terms to describe this relationship:
 ## Class Diagrams
 
 ![](images/classdiag.svg){width=600px}
+
+In UML class diagrams, inheritance (also called **generalization**) is drawn as a solid line with a **hollow (unfilled) triangular arrowhead**, pointing from the subclass up to the superclass.
 
 ::: {.notes}
 Emphasize that the arrow in UML diagrams points from the subclass UP to the superclass. It means "Student derives from Person" or "Student extends Person".
@@ -338,6 +346,43 @@ Why go through all this trouble?
 2. **Logical Structure:** Creates a natural and logical hierarchy that is easier to understand and manage.
 3. **Extensibility:** You can create a new class that extends an existing one without modifying the original class's code.
 4. **Polymorphism:** Inheritance is the foundation for polymorphism, one of OOP's most powerful features, which allows us to treat objects of different types in a uniform way.
+
+---
+
+## Every Class Extends `Object`
+
+Every class in Java has a superclass, even if you never write `extends`.
+
+If you don't specify one, your class implicitly extends `java.lang.Object`.
+
+```java
+class Person {
+    private String name;
+    // implicitly: class Person extends Object
+}
+```
+
+This is why every object you create already has methods you never wrote:
+
+- `toString()`
+- `equals(Object o)`
+- `hashCode()`
+- `getClass()`
+
+## `Object`'s Methods in Action
+
+```java
+Person p = new Person();
+
+System.out.println(p);              // calls p.toString()
+System.out.println(p.toString());   // e.g. Person@1b6d3586
+System.out.println(p.getClass());   // class Person
+System.out.println(p.equals(p));    // true
+```
+
+That default `toString()` isn't very useful, it just prints the class name and a hash code.
+
+This is exactly why we **override** `toString()`.
 
 ---
 
