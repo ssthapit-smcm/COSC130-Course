@@ -9,8 +9,14 @@ format:
 ---
 
 
-diamond inheritance
-software testing
+## Diamond Problem in Java
+
+The Diamond Problem is a well-known issue in programming languages that support multiple inheritance, where a class inherits the same method from more than one parent class, creating ambiguity about which method should be executed. 
+
+Why Java Avoids the Diamond Problem
+ - Java allows single inheritance for classes, avoiding ambiguity in method resolution.
+ - Multiple inheritance is achieved through interfaces, which only declare methods without implementations (unless using default methods).
+ - The implementing class must provide the actual method definition, resolving potential conflicts.
 
 
 ## What is Polymorphism?
