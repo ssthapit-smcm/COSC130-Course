@@ -14,6 +14,7 @@ format:
 The Diamond Problem is a well-known issue in programming languages that support multiple inheritance, where a class inherits the same method from more than one parent class, creating ambiguity about which method should be executed. 
 
 Why Java Avoids the Diamond Problem
+
  - Java allows single inheritance for classes, avoiding ambiguity in method resolution.
  - Multiple inheritance is achieved through interfaces, which only declare methods without implementations (unless using default methods).
  - The implementing class must provide the actual method definition, resolving potential conflicts.
@@ -310,129 +311,18 @@ for (Character character : characters) {
 - **Maintainability:** Easier to manage and update code.
 - **Clearer Code:** Reduces conditional logic (`if-else` or `switch` statements) because the correct method is invoked automatically.
 
+
+---
+
+
 **Conclusion:** Runtime polymorphism isn't just a pattern; it's a fundamental shift in thinking.
 
 Instead of a central piece of code asking "What type are you, so I know what to do?", you tell the object "Do the thing," and trust the object itself to know how.
 
 This delegation of responsibility is the key to building large, complex systems that don't collapse under their own weight.
 
-## Introduction to Static Members
-
-- The `static` keyword in Java is used for memory management, primarily.
-- It signifies that a member (variable or method) belongs to the **class itself**, rather than to any specific instance of the class.
-- **Static members are shared among all instances of a class.**
-
-## Static Variables (Class Variables)
-
-- **Declaration:** `static data_type variableName;`
-- **Belong to the Class:** There is only one copy of a static variable per class, regardless of how many objects are created (or if no objects are created).
-- **Memory:** Stored in the class area of memory, not in the heap with object instances.
-- **Access:** Can be accessed directly using the class name (e.g., `ClassName.variableName`) or indirectly through an object reference (though this is discouraged for clarity).
-
-## Static Variables Example
-
-```java
-class Student {
-    String name;
-    int rollNo;
-    static String college = "XYZ University"; // Static variable
-
-    Student(String n, int r) {
-        this.name = n;
-        this.rollNo = r;
-    }
-
-    void display() {
-        System.out.println(name + " " + rollNo + " " + college);
-    }
-}
-
-public class StaticVarDemo {
-    public static void main(String[] args) {
-        Student s1 = new Student("Alice", 101);
-        Student s2 = new Student("Bob", 102);
-
-        s1.display(); // Output: Alice 101 XYZ University
-        s2.display(); // Output: Bob 102 XYZ University
-
-        Student.college = "ABC University"; // Change static variable
-        s1.display(); // Output: Alice 101 ABC University
-    }
-}
-```
-
-**Observation:** Changing `college` via `Student.college` affects all students.
-
-## Static Methods (Class Methods)
-
-- **Declaration:** `static return_type methodName(parameters) { ... }`
-- **Belong to the Class:** Can be called directly using the class name (e.g., `ClassName.methodName()`) without creating an object.
-- **Restrictions:**
-    - A `static` method can **only** access `static` variables and call other `static` methods of the same class.
-    - It **cannot** use `this` or `super` keywords.
-    - It **cannot** directly access instance variables or call instance methods because it doesn't operate on a specific object.
-
-## Static Methods Example
-
-```java
-class MathUtils {
-    static final double PI = 3.14159; // A static final variable (constant)
-
-    static int add(int a, int b) { // Static method
-        return a + b;
-    }
-
-    static double getCircleArea(double radius) { // Static method
-        return PI * radius * radius;
-    }
-
-    // This method would cause a compile-time error if uncommented
-    // String instanceData = "Some data";
-    // static void problematicMethod() {
-    //     System.out.println(instanceData); // ERROR: Cannot access instance var
-    // }
-}
-
-public class StaticMethodDemo {
-    public static void main(String[] args) {
-        int sum = MathUtils.add(5, 3);
-        System.out.println("Sum: " + sum); // Output: Sum: 8
-
-        double area = MathUtils.getCircleArea(10);
-        System.out.println("Area: " + area); // Output: Area: 314.159
-    }
-}
-```
-
-**Usage:** Notice how methods are called directly on the class `MathUtils`.
-
-## When to Use Static Members
-
-- **Static Variables:**
-    - When a property is common to _all_ objects of a class (e.g., a company name, a counter for instances).
-    - To define constants (`static final`).
-- **Static Methods:**
-    - Utility methods that perform operations without needing object-specific data (e.g., mathematical functions, helper methods).
-    - Factory methods (methods that create and return objects).
-    - Methods that only operate on static variables.
-- **Main Method:** The `main` method in Java is `static` so that the JVM can call it to start the program without needing to create an object of the class.
-
-## Key Differences: Instance vs. Static
-
-|Feature|Instance Members (Non-Static)|Static Members (Class)|
-|---|---|---|
-|**Belongs To**|An object instance|The class itself|
-|**Memory**|Separate copy for each object (Heap)|One copy for the entire class (Class Area)|
-|**Access**|Requires an object to call/access|Can be called/accessed directly using class name|
-|**`this`/`super`**|Can use `this` and `super`|Cannot use `this` or `super`|
-|**Access to Other Members**|Can access both instance & static members|Can _only_ access static members|
-|**Polymorphism**|Applicable (method overriding)|Not applicable (method hiding instead)|
-
 ## Summary
 
 - **Polymorphism** allows flexibility:
     - **Method Overloading** (Compile-time) - Same method name, different parameters.
     - **Method Overriding** (Runtime) - Subclass redefines superclass method.
-- **Static Members** belong to the class, not an object:
-    - **Static Variables** are shared across all instances.
-    - **Static Methods** can only access other static members and are called on the class itself.
