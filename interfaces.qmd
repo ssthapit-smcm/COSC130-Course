@@ -252,3 +252,6 @@ public void startTheParty(List<Playable> players) {
     - `Report` -> `SummaryReport`, `DetailReport` (User-defined)
 
 You've just seen the core principles of modern software design in action.
+
+
+### Comparable interface

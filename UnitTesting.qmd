@@ -8,6 +8,12 @@ format:
     scrollable: true
 ---
 
+## Assignments
+
+ - Assignment 4 due on Thursday, Oct 1 at 11:45 PM
+ - Midterm 1 on Oct 6 during class time
+
+
 ## Source
 
 ::: {.callout-note appearance="simple"}
@@ -699,4 +705,275 @@ Only the **sign** matters — check `> 0` or `< 0`, not an exact number.
 - JUnit 5: <https://junit.org/junit5/>
 
 
-## Practice - lab 07
+# Practice Secret Messages
+
+In this activity you will test and debug code that someone else wrote. You will write JUnit unit and integration tests, use the failing tests to find the bugs, and fix them.
+
+**Exercise Procedure**
+
+1. Read the full activity instructions (this document).
+2. Ask Instructor any questions you have about the instructions.
+3. Write Unit and Integration Test Cases.
+4. Debug `SecretMessage.java` based on executing your Unit and Integration Test Cases.
+5. Complete the reflection questions.
+
+**Recommended Testing Procedure**
+
+Test and debug one method at a time, starting with the small helper methods. `encrypt` and `decrypt` call the helpers, so they cannot work until the helpers do.
+
+1. Read the requirements and work through the **Hello** examples by hand until you understand each step of the algorithms.
+2. Focus on the `swapCharacter` method.
+    - Write Unit and Integration Test Cases for `swapCharacter`.
+    - Execute **all** tests, but focus only on the failing tests for `swapCharacter`. Debug the code until those tests pass.
+3. Focus on the `moveCharacter` method.
+    - Write Unit and Integration Test Cases for `moveCharacter`.
+    - Execute **all** tests, but focus only on the failing tests for `moveCharacter` and the method(s) already tested above. Debug the code until those tests pass.
+4. Focus on the `swapSubstrings` method.
+    - Write Unit and Integration Test Cases for `swapSubstrings`.
+    - Execute **all** tests, but focus only on the failing tests for `swapSubstrings` and the method(s) already tested above. Debug the code until those tests pass.
+5. Focus on the `encrypt` method.
+    - Write Unit and Integration Test Cases for `encrypt`.
+    - Execute **all** tests, but focus only on the failing tests for `encrypt` and the method(s) already tested above. Debug the code until those tests pass.
+6. Focus on the `decrypt` method.
+    - Write Unit and Integration Test Cases for `decrypt`.
+    - Execute **all** tests, but focus only on the failing tests for `decrypt` and the method(s) already tested above. Debug the code until those tests pass.
+7. Run all of your tests one final time. If you changed the source code at any point, every test must still pass.
+
+**Expected Repo Structure**
+
+```text
+- Repo (e.g., COSC201-Lab7)
+- - .gitignore
+- - Lab7
+- - - README.md
+- - - lib
+- - - - junit-platform-console-standalone-6.1.3.jar
+- - - src
+- - - - SecretMessage.java
+- - - test
+- - - - SecretMessageTest.java
+- - - bin (not pushed to GitHub)
+- - - - SecretMessage.class
+- - - - SecretMessageTest.class
+```
+
+**Requirements**
+
+Two friends wanted to be able to send secret messages to one another. They created simple algorithms (see below) to encrypt and decrypt their messages and implemented them in `SecretMessage.java`. Unfortunately, they know they have mistakes in the code and have asked you to help thoroughly test and debug it.
+
+**Encrypt Algorithm**
+
+```text
+Algorithm encrypt(message)
+Input   message to encrypt
+Output  encrypted message
+
+If length of message is less than three, output message.
+
+Otherwise, complete the following steps:
+ 1. Swap characters:
+    - If first and last characters are letters, swap first and last
+      characters of message.
+    - If first character is digit, swap second and next to last
+      characters of message.
+    - Otherwise, no swaps.
+ 2. Move character at index (length - 2) to the end of the string.
+ 3. Swap substrings:
+    - If length is even, swap first half of message with second half.
+    - If length is odd and divisible by three, swap first third of
+      message with last third of message.
+    - If length is odd and not divisible by three, leave middle
+      character as is and swap substrings before and after it.
+
+Output encrypted message
+```
+
+**Encryption Example**
+
+Message: `Hello`
+
+| Step | What happens | Result |
+|:--|:--|:--|
+| 1. Swap characters | First and last characters are letters, so swap them. | `oellH` |
+| 2. Move character | Move the character at index 3 (length 5 − 2) to the end. | `oelHl` |
+| 3. Swap substrings | Length 5 is odd and not divisible by three. Leave the middle character and swap the substrings before and after it. | `Hlloe` |
+
+Therefore, the encrypted version of `Hello` is `Hlloe`.
+
+**Decrypt Algorithm**
+
+Decrypting runs the same three steps in **reverse order**.
+
+```text
+Algorithm decrypt(message)
+Input   message to decrypt
+Output  decrypted message
+
+If length of message is less than three, output message.
+
+Otherwise, complete the following steps:
+ 1. Swap substrings:
+    - If length is even, swap first half of message with second half.
+    - If length is odd and divisible by three, swap first third of
+      message with last third of message.
+    - If length is odd and not divisible by three, leave middle
+      character as is and swap substrings before and after it.
+ 2. Move character at index (length - 2) to the end of the string.
+ 3. Swap characters:
+    - If first and last characters are letters, swap first and last
+      characters of message.
+    - If first character is digit, swap second and next to last
+      characters of message.
+    - Otherwise, no swaps.
+
+Output decrypted message
+```
+
+**Decryption Example**
+
+Message: `Hlloe`
+
+| Step | What happens | Result |
+|:--|:--|:--|
+| 1. Swap substrings | Length 5 is odd and not divisible by three. Leave the middle character and swap the substrings before and after it. | `oelHl` |
+| 2. Move character | Move the character at index 3 to the end. | `oellH` |
+| 3. Swap characters | First and last characters are letters, so swap them. | `Hello` |
+
+Therefore, the decrypted version of `Hlloe` is `Hello`.
+
+**User Interface**
+
+The program prompts the user for:
+
+1. Whether they would like to encrypt or decrypt the message.
+    - If the first character of the response is `E` or `e`, encrypt.
+    - If the first character of the response is `D` or `d`, decrypt.
+    - Otherwise, output `Invalid option.`
+2. The message to encrypt or decrypt. It may contain several words but will be a single line.
+
+If a valid option is given, the encrypted or decrypted message is printed.
+
+**Implementation**
+
+You will be testing the implementation **given** in your starter code. `SecretMessage.java` contains these public methods:
+
+```java
+// Returns encrypted message based on encrypt algorithm
+public static String encrypt(String message)
+
+// Returns decrypted message based on decrypt algorithm
+public static String decrypt(String message)
+
+// Returns results of the "Swap characters" step.
+// Works for messages of any length.
+public static String swapCharacter(String message)
+
+// Returns results of the "Move character" step.
+// Works for messages of length two or greater.
+// Throws IllegalArgumentException if length is 0 or 1
+public static String moveCharacter(String message)
+
+// Returns results of the "Swap substrings" step.
+// Works for messages of any length.
+public static String swapSubstrings(String message)
+```
+
+**Unit and Integration Testing**
+
+1. Download the JUnit jar, `junit-platform-console-standalone-6.1.3.jar`, from [Maven Central](https://repo1.maven.org/maven2/org/junit/platform/junit-platform-console-standalone/6.1.3/) and place it in the `lib` directory inside your `Lab7` directory.
+2. In the given `SecretMessageTest.java`, add **at least two** test cases for each public method in `SecretMessage.java` (see the `TODO` comments). You do not need to test `userInterface` or `main`. To cover every path through a method, you may need more than two tests.
+3. Compile and run `SecretMessageTest.java`. Some of your tests will fail. That is expected: the code has bugs.
+
+For every test:
+
+- Put each test in its **own** test method.
+- Make it **non-redundant**, **repeatable**, and **specific**. Non-redundant means each test covers a unique error condition or a unique combination of valid inputs.
+- Work out the expected result **by hand**, step by step, like the Hello example, before you run the test. Keep these traces: they are the fastest way to find a mistake in either the code or your expected value.
+- Consider the conditions in the **algorithms**, the **paths** through the code, **equivalence classes**, and **boundary values** (e.g., message length, first and last characters).
+- See the `TODO` comments in the given test file for additional hints.
+
+**Writing a JUnit Test**
+
+Here are two example tests. The first checks a normal result with `assertEquals`. The second checks that `moveCharacter` throws an exception for a message that is too short, using `assertThrows`.
+
+```java
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import org.junit.jupiter.api.Test;
+
+public class SecretMessageTest {
+
+    @Test
+    public void testEncryptHello() {
+        assertEquals("Hlloe", SecretMessage.encrypt("Hello"),
+                "Encrypt Hello (odd length, not divisible by 3)");
+    }
+
+    @Test
+    public void testMoveCharacterTooShort() {
+        assertThrows(IllegalArgumentException.class,
+                () -> SecretMessage.moveCharacter("a"),
+                "moveCharacter with length 1 should throw");
+    }
+}
+```
+
+`assertEquals(expected, actual, message)` puts the **expected** value first. The last argument is a message that JUnit prints if the test fails, so make it describe what the test checks.
+
+**Running Tests**
+
+Run these commands from inside your `Lab7` directory.
+
+**Mac and Linux:**
+
+```bash
+javac -d bin -cp bin src/SecretMessage.java
+javac -d bin -cp "bin:lib/*" test/SecretMessageTest.java
+java -jar lib/junit-platform-console-standalone-6.1.3.jar execute -cp bin -c SecretMessageTest
+```
+
+**Windows:** the only difference is the `;` instead of `:` in the second command.
+
+```bash
+javac -d bin -cp bin src/SecretMessage.java
+javac -d bin -cp "bin;lib/*" test/SecretMessageTest.java
+java -jar lib/junit-platform-console-standalone-6.1.3.jar execute -cp bin -c SecretMessageTest
+```
+
+Add `--details verbose` to the end of the `java` command if you want more detail in the output:
+
+```bash
+java -jar lib/junit-platform-console-standalone-6.1.3.jar execute -cp bin -c SecretMessageTest --details verbose
+```
+
+**Hints for Writing Unit and Integration Tests**
+
+- Control flow diagrams, paths through the code, and the conditions in the algorithms can help you come up with different test cases.
+- `swapCharacter`, `moveCharacter`, and `swapSubstrings` each match **one step** of the algorithm. Tests for these are **unit tests**.
+- `encrypt` and `decrypt` call the three helpers, so tests for these are **integration tests**. Each one checks the whole algorithm.
+- Once you have an encrypt test, you get a decrypt test for free: decrypting the encrypted result should give back the original message (e.g., `decrypt("Hlloe")` should return `Hello`).
+- Think about what makes each branch of the algorithm run: a first character that is a letter, a digit, or neither; an even length; an odd length divisible by three; an odd length not divisible by three; and lengths below three.
+
+**Debugging**
+
+Use your failing tests to find and fix the bugs in `SecretMessage.java`.
+
+1. Debug `swapCharacter`, `moveCharacter`, and `swapSubstrings` **before** `encrypt` and `decrypt`. A bug in a helper will make `encrypt` and `decrypt` fail too, even if their own code is correct.
+2. Keep debugging until **all** of your tests pass. **Do not change a test** unless you are 100% sure its expected result is wrong. Check your hand trace first.
+3. Each time you change the source code, re-run **all** of your tests to make sure a fix did not break something that used to work.
+
+As you debug, record every bug you find in your README.md (see the [Markdown Guide](https://www.markdownguide.org/basic-syntax/)). For each bug, write:
+
+- Which method the bug was in, and what was wrong.
+- Which test (by test method name) revealed it.
+- How you fixed it.
+
+**Reflections**
+
+Document your reflections to the following questions in your README.md:
+
+- Which bug was hardest to find? What did the failing test tell you, and what did you have to do beyond reading the test output to find the cause?
+- Did any of your tests fail because *your* expected value was wrong rather than the code? How did you figure out which one was wrong?
+- Why does it help to debug the helper methods before `encrypt` and `decrypt`?
+
