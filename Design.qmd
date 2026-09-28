@@ -1,10 +1,14 @@
 ---
 title: Comprehensive Exercise
-description: Design
-tags:  [software engineering, software lifecycle, CS1, CSC, requirements]
-navigation: on
-pagegroup: comprehensive-exercise-s20
+format:
+  revealjs:
+    theme: simple
+    slide-number: true
+    embed-resources: true 
+    scrollable: true
 ---
+
+
 # Object Oriented Design
 
 For object-oriented design describes the classes, including their state and behaviors, and the relationship between those classes. We start by discovering classes and their state.  The next step is to determine the responsibilities of each class.  Finally, we describe the relationships between each class.  

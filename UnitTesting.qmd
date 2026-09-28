@@ -697,3 +697,6 @@ Only the **sign** matters — check `> 0` or `< 0`, not an exact number.
 - ISO/IEC/IEEE 24765:2010(E). *Systems and software engineering – Vocabulary*.
 - ISO/IEC TR 19759:2005. *Guide to the Software Engineering Body of Knowledge (SWEBOK)*.
 - JUnit 5: <https://junit.org/junit5/>
+
+
+## Practice - lab 07

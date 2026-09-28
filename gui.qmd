@@ -1,0 +1,404 @@
+---
+title: "GUI"
+format:
+  revealjs:
+    theme: simple
+    slide-number: true
+    embed-resources: true 
+    scrollable: true
+---
+
+# From Console to Application
+
+A Crash Course on Our New GUI Library
+
+## The "Why"
+
+Until now, our programs have lived in the console.
+
+```txt
+Enter student name: Alice
+Student added.
+
+```
+
+The problem? This isn't how real software works. We want to build applications with buttons, tables, and tabs.
+
+This library lets us do that. It handles all the hard graphics programming, so we can focus on **Object-Oriented Design**.
+
+## The Foundation
+
+Creating an application window is two lines of code.
+
+- `App`: This class represents the main application window.
+
+- `Page`: This class represents a single tab inside that window.
+
+```java
+// 1. Create the main window
+App myApp = new App("Student Information System");
+
+// 2. Add some tabs (Pages)
+Page studentPage = myApp.addPage("Students");
+Page formPage = myApp.addPage("Add Student");
+
+// 3. Show the app
+myApp.show();
+
+```
+
+## Adding Components
+
+A `Page` is just a container. We need to add "stuff" to it. We call this "stuff" a **Component**.
+
+Our library has only four components:
+
+- `Table`
+
+- `Form`
+
+- `Chart`
+
+- `Text`
+
+Let's look at how to create each one.
+
+## Component Guide: Text
+
+This is the simplest component. It's used to display any text, from a simple welcome message to a full report.
+
+**Constructor:** `new Text(String initialContent)`
+
+**Example:**
+
+```java
+// 1. Create the text component
+Text welcomeMessage = new Text("Welcome to the Student App!");
+
+// 2. Add it to a page
+myPage.addComponent(welcomeMessage);
+
+// You can also update it later!
+// welcomeMessage.setText("A new message!");
+```
+
+## Component Guide: Form
+
+This component is used to get input from a user.
+
+**Constructor:** `new Form(String[] fields, String submitButtonText, FormSubmitHandler handler)`
+
+- `String[] fields`: An array of labels for the text boxes.
+
+- `String submitButtonText`: The text for the submit button.
+
+- `FormSubmitHandler handler`: An object that _knows what to do_ on submit.
+
+---
+
+**Example:**
+
+```java
+String[] studentFields = {"ID", "Name", "Major"};
+
+// We must create a handler object to pass to the form
+MyFormHandler handler = new MyFormHandler(...);
+
+Form studentForm = new Form(studentFields, "Add Student", handler);
+myPage.addComponent(studentForm, BorderLayout.CENTER);
+```
+
+::: {.notes}
+The `FormSubmitHandler` is an `interface` you must `implement`. We'll cover this next!
+:::
+
+## Component Guide: Table
+
+This component displays data in a grid of rows and columns.
+
+**Constructor:** `new Table(String[] columnNames, Rowable[] initialData)`
+
+- `String[] columnNames`: An array of headers for the table.
+
+- `Rowable[] initialData`: An array of _objects_ to display. Can be null or empty.
+
+---
+
+**Example:**
+
+```java
+String[] columns = {"ID", "Name", "Major"};
+
+// The table needs an array of objects
+Student[] students = { ... }; // (We'll see how to make these)
+
+Table studentTable = new Table(columns, students);
+myPage.addComponent(studentTable);
+```
+
+::: {.notes}
+The `Table` only accepts objects that `implement` the `Rowable` interface. This is another key "contract"!
+:::
+
+## Component Guide: Chart
+
+This component visualizes data as a Pie or Bar chart.
+
+**Constructor:** `new Chart(String title, String type, String[] keys, Number[] values)`
+
+- `String title`: The title displayed on the chart.
+
+- `String type`: The type of chart (e.g., "PIE" or "BAR").
+
+- `String[] keys`: An array of `String` labels.
+
+- `Number[] values`: An array of `Number` objects.
+
+---
+
+**Example:**
+
+```java
+String[] majorKeys = {"Computer Science", "Physics", "Mathematics"};
+// We can put Integers, Doubles, etc. in a Number array!
+Number[] majorValues = {10, 5, 8.5};
+
+Chart majorChart = new Chart("Majors Breakdown", "PIE", majorKeys, majorValues);
+myPage.addComponent(majorChart);
+```
+
+::: {.notes}
+The `Number` array can hold different types of numbers. This is a powerful OOP concept we'll look at right now!
+:::
+
+## The Big Connection: OOP in Practice
+
+You just learned about `interfaces` and `abstract classes`. You might be thinking, "When would I ever use these?"
+
+**You are about to use them right now.**
+
+This library is built on these "contracts." They are the "plugs" that let _your_ code connect to the library's code.
+
+## Use Case 1: The `Form` and the `FormSubmitHandler`
+
+We have a `Form` component.
+
+```java
+String[] fields = {"ID", "Name", "Major"};
+Form studentForm = new Form(fields, "Add Student", ...);
+
+```
+
+**The Problem:** The `Form` component has no idea what you want to do when the "Submit" button is clicked.
+
+Should it add a student? Email a professor? Launch a rocket?
+
+## The Solution: An Interface "Contract"
+
+The `Form` component says:
+
+> "I don't care _what_ you do. I just need you to sign this **contract**. The contract is an `interface` called `FormSubmitHandler`."
+
+**The Contract (`FormSubmitHandler.java`):**
+
+```java
+public interface FormSubmitHandler {
+    void onSubmit(String[] values);
+}
+
+```
+
+The `Form` _promises_ it will call `onSubmit` when the button is clicked. Your job is to provide a class that _implements_ this contract.
+
+## Fulfilling the Contract
+
+You create a class that "signs" the contract by using the `implements` keyword.
+
+```java
+// Your class "implements" the contract
+public class MyFormHandler implements FormSubmitHandler {
+
+    // You might need references to other components,
+    // like a Table, which you can pass in.
+    private Table dataTable;
+    public MyFormHandler(Table table) {
+        this.dataTable = table;
+    }
+
+    // You MUST provide this method
+    @Override
+    public void onSubmit(String[] values) {
+        // Your logic goes here!
+        // For example, create an object and add it to the table
+        // MyObject obj = new MyObject(values[0], values[1]);
+        // dataTable.addRow(obj);
+        System.out.println("Form was submitted!");
+    }
+}
+
+```
+
+This is a **real-world** use of an interface. It "decouples" the `Form` from your specific logic.
+
+## Use Case 2: The `Table` and the `Rowable` Interface
+
+We have a `Table` component.
+
+```java
+String[] columns = {"ID", "Name", "Major"};
+Table studentTable = new Table(columns, ...);
+
+```
+
+**The Problem:** You have a `Student` object. `Student alice = new Student("101", "Alice", "CS");`
+
+How does the `Table` know how to display your `Student`? Should it show the ID first or the Name? Does it even know what a "Major" is?
+
+## The Solution: The `Rowable` Contract
+
+The `Table` component says:
+
+> "I can display _any_ object you give me, as long as it signs the `Rowable` **contract**."
+
+**The Contract (`Rowable.java`):**
+
+```java
+public interface Rowable {
+    Object[] getRowData();
+}
+
+```
+
+Your `Student` class must "sign" this contract. It must _promise_ to provide a method called `getRowData()` that returns its data in the correct order for the table.
+
+## Fulfilling the `Rowable` Contract
+
+You make your `Student` class "sign" the contract.
+
+```java
+// Your Student class "implements" the Rowable contract
+public class Student implements Rowable {
+    private String id;
+    private String name;
+    private String major;
+    // ... constructor, getters ...
+
+    // You MUST provide this method
+    @Override
+    public Object[] getRowData() {
+        // You define the order!
+        return new Object[]{ this.id, this.name, this.major };
+    }
+}
+
+```
+
+Now, you can just pass `Student` objects directly to the table! `studentTable.addRow(alice);`
+
+## A Quick Detour: Primitives vs. Objects
+
+**The Problem:** We have simple data types like `int`, `double`, and `float`. These are called "primitives."
+
+Primitives are fast, but they are **not objects**. They don't have methods, and they can't be part of an object hierarchy (they can't `extend` a class).
+
+---
+
+**The Solution:** Java provides "wrapper classes" for every primitive.
+
+- `int` -> `Integer`
+
+- `double` -> `Double`
+
+- `float` -> `Float`
+
+These classes "wrap" the primitive value inside a full-featured object.
+
+```java
+int myAge = 30;                 // A primitive value
+Integer myAgeObject = 30;     // An Integer object holding 30
+Integer another = myAge;    // An Integer automatically wraps an int
+```
+
+Now that we have _objects_ like `Integer` and `Double`, we can use them in OOP!
+
+## Use Case 3: The `Chart` and the `Number` Class
+
+**The Problem:** The `Chart` component needs an array of values. But what _kind_ of values? `Integer`? `Double`? `Float`? What if you have a mix?
+
+**The Solution: An Abstract Class "Blueprint"**
+
+Java provides an `abstract class` called `java.lang.Number`.
+
+`Integer`, `Double`, `Float`, and others all `extend` this `Number` class. This "blueprint" says "I am a thing that can be treated as a number."
+
+---
+
+**Polymorphism in Action:**
+
+Because they all share this blueprint, we can put them in the _same array_!
+
+```java
+// This is Polymorphism!
+Number[] myData = { 10, 15.5, 20, 8.2f };
+```
+
+The `Chart` constructor is defined as `new Chart(..., Number[] values)`. It doesn't care about the _specific_ type, only that each object follows the `Number` blueprint.
+
+## Use Case 4: Your _Own_ Abstract Class (`Report`)
+
+Let's use this same concept to build our _own_ blueprint.
+
+**The Problem:** Imagine you want to create several different types of reports in your app, like a `SummaryReport` and a `DetailReport`. How could we treat them all as the same "thing"?
+
+**The Solution:** We can create an `abstract class` called `Report` to act as a blueprint!
+
+## The Power of a Blueprint
+
+Just like Java's `Number` class is a blueprint for numbers, we can make our _own_ blueprint for reports.
+
+An `abstract class` like `Report` acts as a "blueprint" that can _force_ all subclasses to have a `generate()` method.
+
+This lets you do something powerful: **Polymorphism**.
+
+---
+
+**Generating different types of reports**
+
+```java
+// You can put different types of reports in one array!
+Report[] allMyReports = new Report[] {
+    new SummaryReport(),
+    new DetailReport()
+};
+
+// And loop through them, treating them all the same!
+String fullReport = "";
+for (Report r : allMyReports) {
+    // Java calls the correct generate() for each one
+    fullReport += r.generate(studentTable) + "\n\n";
+}
+
+// Now you could show this in a Text component!
+Text reportDisplay = new Text(fullReport);
+myPage.addComponent(reportDisplay, BorderLayout.CENTER);
+```
+
+## Your Turn: Build a "To-Do List" App!
+
+Time to build your own application from scratch.
+
+**Your Assignment:**
+
+1. Create an `App` with two `Page`s: "My Tasks" and "Add Task".
+
+2. Create a `Task` class (e.g., with `description`, `priority`). Make it `implements Rowable`.
+
+3. On the "My Tasks" page, add a `Table` to display your `Task` objects.
+
+4. On the "Add Task" page, add a `Form` for adding a new task.
+
+5. Create a `TaskFormHandler` class that `implements FormSubmitHandler`.
+
+6. Make your form handler add a new `Task` object to your `Table` when submitted.
+
+7. Run your app and test it!
