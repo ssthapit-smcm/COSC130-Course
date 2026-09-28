@@ -12,6 +12,16 @@ format:
 
  - Assignment 4 due on Thursday, Oct 1 at 11:45 PM
  - Midterm 1 on Oct 6 during class time
+    - Topics:
+        - Basic concepts from CS1
+        - Finding bugs
+        - Evaluating Expressions
+        - Method Overloading
+        - Classes and Object Oriented Design Principles
+        - UML
+        - Encapsulation and Abstraction
+
+ - Do we want to do a review for midterm next course or continue with abstract classes and interfaces?
 
 
 ## Source
