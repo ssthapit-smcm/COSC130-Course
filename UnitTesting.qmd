@@ -21,7 +21,7 @@ format:
         - UML
         - Encapsulation and Abstraction
 
- - Do we want to do a review for midterm next course or continue with abstract classes and interfaces?
+ - Review for midterm next class?
 
 
 ## Source
@@ -63,11 +63,11 @@ System testing strategies still apply — requirements, equivalence classes, bou
 
 **Basis set testing** – exercise **every path** through the code.
 
-## JUnit 5
+## JUnit 6
 
 - A framework for **automating** unit and integration tests in Java
 - Not part of the standard Java library — download it
-- Put `junit-platform-console-standalone-1.6.2.jar` in `lib/`
+- Put `junit-platform-console-standalone-6.1.3.jar` in `lib/`
 
 ```
 Paycheck
@@ -76,7 +76,7 @@ Paycheck
     -> test
         -> PaycheckTest.java
     -> lib
-        -> junit-platform-console-standalone-1.6.2.jar
+        -> junit-platform-console-standalone-6.1.3.jar
     -> bin
 ```
 
@@ -162,7 +162,7 @@ $ javac -d bin -cp "bin;lib/*" test/PaycheckTest.java
 ## Running the Tests
 
 ```bash
-$ java -jar lib/junit-platform-console-standalone-1.6.2.jar -cp bin -c PaycheckTest
+$ java -jar lib/junit-platform-console-standalone-6.1.3.jar -cp bin -c PaycheckTest
 ```
 
 Shortcut (if it's the only jar in `lib`):
@@ -701,10 +701,9 @@ Only the **sign** matters — check `> 0` or `< 0`, not an exact number.
 | View | Closed box | Open box |
 | Tests | Whole program | Methods |
 | Source of tests | Requirements | Requirements + code |
-| Record in | System Test Plan + traceability matrix | JUnit test class |
+| Record in | System Test Plan | JUnit test class |
 | Strategies | Requirements, equivalence classes, boundaries | + all paths, exceptions |
 
-**Loops:** 0, 1, 2, *m*, *n*−1, *n*, *n*+1 iterations · **Arrays:** size, contents, unchanged · **Objects:** `@BeforeEach`, `toString`, `equals`, `compareTo`
 
 ## References
 
@@ -712,7 +711,7 @@ Only the **sign** matters — check `> 0` or `< 0`, not an exact number.
 - Pressman, R. S. (2005). *Software Engineering: A Practitioner's Approach* (6th ed.). McGraw-Hill.
 - ISO/IEC/IEEE 24765:2010(E). *Systems and software engineering – Vocabulary*.
 - ISO/IEC TR 19759:2005. *Guide to the Software Engineering Body of Knowledge (SWEBOK)*.
-- JUnit 5: <https://junit.org/junit5/>
+- JUnit: <https://junit.org/>
 
 
 # Practice Secret Messages
