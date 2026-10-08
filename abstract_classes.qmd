@@ -8,6 +8,20 @@ format:
     scrollable: true
 ---
 
+## Revision
+
+ - **Inheritance** allows a new class to be based on an existing class. The new class **inherits** the properties (fields) and behaviors (methods) of the existing class.
+
+    - This models a **"is-a" relationship**.
+
+- **Polymorphism** allows a single interface can represent different underlying forms/types.
+
+- **Polymorphism** allows flexibility:
+    - **Method Overloading** (Compile-time) - Same method name, different parameters.
+    - **Method Overriding** (Runtime) - Subclass redefines superclass method.
+
+
+
 ## The Problem: Teamwork and Inconsistency
 
 Imagine you're leading a team building a new feature: Reports.

@@ -225,6 +225,103 @@ public void startTheParty(List<Playable> players) {
 }
 ```
 
+
+## UML: Abstract Classes
+
+- Write `«abstract»` above the class name (or put the name in *italics*).
+- Write each abstract method in *italics*, or add `{abstract}` after it.
+- Subclasses use the same arrow as any other inheritance: solid line, hollow triangle.
+
+```{mermaid}
+classDiagram
+    class Report {
+        <<abstract>>
+        -reportName : String
+        +Report(name : String)
+        +getName() String
+        +generate(studentTable : Table) String*
+    }
+    class SummaryReport {
+        +SummaryReport()
+        +generate(studentTable : Table) String
+    }
+    class DetailReport {
+        +DetailReport()
+        +generate(studentTable : Table) String
+    }
+    Report <|-- SummaryReport
+    Report <|-- DetailReport
+```
+
+## UML: Interfaces
+
+- Write `«interface»` above the name.
+- An interface has no fields, so the fields compartment is empty.
+- Every method is abstract already, so there is no need to mark each one.
+
+## UML: `implements`
+
+| Java | UML name | Line | Arrowhead |
+|---|---|---|---|
+| `extends` | Generalization | solid | hollow triangle, pointing to the superclass |
+| `implements` | Realization | **dashed** | hollow triangle, pointing to the interface |
+
+```{mermaid}
+classDiagram
+    class Flyable {
+        <<interface>>
+        +takeOff() void
+        +fly() void
+        +land() void
+    }
+    class Animal
+    class Vehicle
+    class Bird {
+        +takeOff() void
+        +fly() void
+        +land() void
+    }
+    class Airplane {
+        +takeOff() void
+        +fly() void
+        +land() void
+    }
+    Animal <|-- Bird
+    Vehicle <|-- Airplane
+    Flyable <|.. Bird
+    Flyable <|.. Airplane
+```
+
+## UML: Extend One, Implement Many
+
+One solid arrow at most, and as many dashed arrows as the class has interfaces.
+
+```{mermaid}
+classDiagram
+    class ElectronicDevice
+    class Callable {
+        <<interface>>
+        +makeCall(number : String) void
+        +endCall() void
+    }
+    class Connectable {
+        <<interface>>
+        +connectToWifi(ssid : String) void
+        +connectToBluetooth(device : String) void
+    }
+    class Playable {
+        <<interface>>
+        +playMusic(track : String) void
+        +stopMusic() void
+    }
+    class SmartPhone
+    ElectronicDevice <|-- SmartPhone
+    Callable <|.. SmartPhone
+    Connectable <|.. SmartPhone
+    Playable <|.. SmartPhone
+```
+
+
 ## Key Takeaway
 
 
@@ -251,7 +348,248 @@ public void startTheParty(List<Playable> players) {
 
     - `Report` -> `SummaryReport`, `DetailReport` (User-defined)
 
-You've just seen the core principles of modern software design in action.
 
 
-### Comparable interface
+## A New Problem: Sorting Objects
+
+Java already knows how to sort numbers and strings.
+
+```java
+int[] scores = {88, 72, 95};
+Arrays.sort(scores);     // [72, 88, 95]
+
+String[] names = {"Cara", "Alice", "Bob"};
+Arrays.sort(names);      // [Alice, Bob, Cara]
+```
+
+What about a class we wrote ourselves?
+
+```java
+Student[] roster = { new Student("Alice", 3.9), new Student("Bob", 3.2) };
+Arrays.sort(roster);     // compiles, then crashes!
+```
+
+```
+ClassCastException: class Student cannot be cast to class java.lang.Comparable
+```
+
+Java has no idea what "comes first" means for a `Student`. By name? By GPA? **We have to tell it.**
+
+::: {.notes}
+`Arrays` needs `import java.util.Arrays;`. Point out that this is a runtime error, not a compiler error: `Arrays.sort` accepts any `Object[]` and only discovers the problem when it tries to compare two elements.
+:::
+
+## The `Comparable` Interface
+
+`Comparable` is an interface that is **built into Java**. Its contract has one method:
+
+```java
+public interface Comparable<T> {
+    int compareTo(T other);
+}
+```
+
+- A class that `implements Comparable` promises: "my objects can be put in order."
+
+- The `<T>` is the type you compare against. A `Student` is compared with another `Student`, so we write `Comparable<Student>`.
+
+- `Arrays.sort` doesn't care **what** your class is. It only cares that it **can do** `compareTo`. This is the same idea as `Playable`.
+
+## What `compareTo` Returns
+
+`a.compareTo(b)` answers one question: where does `a` go relative to `b`?
+
+|**Result**|**Meaning**|
+|---|---|
+|**negative**|`a` comes **before** `b`|
+|**zero**|`a` and `b` are in the same position|
+|**positive**|`a` comes **after** `b`|
+
+Only the **sign** matters. Never check for exactly `-1` or `1`.
+
+```java
+if (a.compareTo(b) < 0) { /* a comes first */ }
+```
+
+## Implementing `Comparable`
+
+```java
+public class Student implements Comparable<Student> {
+    private String name;
+    private double gpa;
+
+    // constructor, getters ...
+
+    @Override
+    public int compareTo(Student other) {
+        return Double.compare(this.gpa, other.gpa);
+    }
+}
+```
+
+`Double.compare(x, y)` and `Integer.compare(x, y)` return negative, zero, or positive for you.
+
+---
+
+**Now sorting works:**
+
+```java
+Student[] roster = {
+    new Student("Alice", 3.9),
+    new Student("Bob", 3.2),
+    new Student("Cara", 3.6)
+};
+
+Arrays.sort(roster);     // Bob (3.2), Cara (3.6), Alice (3.9)
+```
+
+- `Arrays.sort` calls **your** `compareTo` whenever it needs to decide which of two students comes first.
+
+- For a `List<Student>`, use `Collections.sort(list)`. It relies on the same contract.
+
+## Strings Are Already `Comparable`
+
+`String` implements `Comparable<String>`. That is why `Arrays.sort(names)` worked without any help from us.
+
+```java
+"apple".compareTo("banana")    // negative: "apple" comes first
+"banana".compareTo("apple")    // positive: "banana" comes after
+"hello".compareTo("hello")     // 0
+```
+
+You **cannot** use `<` or `>` on strings.
+
+```java
+if (a < b) { ... }                  // ERROR! Does not compile
+if (a.compareTo(b) < 0) { ... }     // correct
+```
+
+## How Strings Are Compared
+
+Strings are compared in **lexicographic** order:
+
+1. Compare the two strings **one character at a time**, left to right.
+
+2. At the **first position where they differ**, the string with the smaller character code comes first. The result is the difference between those two character codes.
+
+3. If one string runs out before any difference is found, the **shorter** string comes first. The result is the difference in lengths.
+
+---
+
+|**Expression**|**Result**|**Why**|
+|---|---|---|
+|`"cat".compareTo("car")`|`2`|`'t'` (116) minus `'r'` (114)|
+|`"abc".compareTo("abd")`|`-1`|`'c'` (99) minus `'d'` (100)|
+|`"car".compareTo("cart")`|`-1`|no difference in `"car"`; length 3 minus length 4|
+|`"sun".compareTo("sunny")`|`-2`|length 3 minus length 5|
+|`"hello".compareTo("hello")`|`0`|identical|
+
+Once a difference is found, the rest of the string is **never looked at**.
+
+## Gotcha 1: Uppercase Comes Before Lowercase
+
+Every character has a numeric code. `compareTo` compares those codes, not "alphabetical order."
+
+|**Characters**|**Codes**|
+|---|---|
+|`'0'` to `'9'`|48 to 57|
+|`'A'` to `'Z'`|65 to 90|
+|`'a'` to `'z'`|97 to 122|
+
+```java
+"Zebra".compareTo("apple")     // -7: 'Z' (90) is less than 'a' (97)
+
+String[] names = {"maria", "Zoe", "alex", "Ben"};
+Arrays.sort(names);            // [Ben, Zoe, alex, maria]
+```
+
+**Fix:** `compareToIgnoreCase` ignores the difference between upper and lower case.
+
+```java
+"Zebra".compareToIgnoreCase("apple")    // positive: "apple" comes first
+```
+
+## Gotcha 2: Digits Are Characters, Not Numbers
+
+```java
+"10".compareTo("9")            // negative: '1' (49) is less than '9' (57)
+"file10".compareTo("file2")    // negative: '1' (49) is less than '2' (50)
+```
+
+So `"10"` sorts **before** `"9"`, and `"file10"` sorts **before** `"file2"`.
+
+`compareTo` never reads `10` as the number ten. It sees the character `'1'`, finds a difference, and stops.
+
+If you need numeric order, store the value as an `int` and use `Integer.compare`.
+
+## `==` vs. `equals` vs. `compareTo`
+
+|**Code**|**Question it answers**|**Returns**|
+|---|---|---|
+|`a == b`|Are these the **same object** in memory?|`boolean`|
+|`a.equals(b)`|Do they contain the **same characters**?|`boolean`|
+|`a.compareTo(b)`|Which one **comes first**?|`int`|
+
+```java
+String s1 = "hello";
+String s2 = new String("hello");
+
+s1 == s2             // false: two different objects
+s1.equals(s2)        // true: same characters
+s1.compareTo(s2)     // 0: same position
+```
+
+Use `equals` to test whether two strings match. Use `compareTo` to put them in order. Do not use `==` for either.
+
+## Comparing Objects by a String Field
+
+To sort our own objects alphabetically, hand the work to `String`'s `compareTo`.
+
+```java
+public class Student implements Comparable<Student> {
+    private String name;
+    private double gpa;
+
+    @Override
+    public int compareTo(Student other) {
+        return this.name.compareTo(other.name);
+    }
+}
+```
+
+```java
+Arrays.sort(roster);     // Alice, Bob, Cara
+```
+
+Both gotchas still apply: `"alex"` sorts after `"Zoe"`, and `"Room 10"` sorts before `"Room 9"`.
+
+## Check Your Understanding
+
+Is each result negative, zero, or positive?
+
+```java
+"dog".compareTo("cat")
+"Dog".compareTo("cat")
+"cart".compareTo("car")
+"100".compareTo("25")
+"Hello".compareToIgnoreCase("hello")
+```
+
+::: {.notes}
+Answers: positive ('d' is after 'c'), negative (uppercase 'D' is 68, lowercase 'c' is 99), positive ("cart" is longer and "car" is its prefix), negative ('1' is less than '2', so "100" sorts before "25"), zero.
+:::
+
+## Summary: `Comparable`
+
+- `Comparable<T>` is a built-in interface with one method: `int compareTo(T other)`.
+
+- **Negative** means "this comes first," **zero** means "same position," **positive** means "this comes after."
+
+- Implementing it lets `Arrays.sort` and `Collections.sort` order your objects.
+
+- `String` already implements it. Strings are compared **character by character, by character code**.
+
+- Uppercase sorts before lowercase, and digits are compared as characters, so `"10"` comes before `"9"`.
+
+
+## Assignment 5 in Blackboard
