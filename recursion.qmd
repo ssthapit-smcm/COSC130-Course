@@ -1,22 +1,21 @@
 ---
 title: "Recursion"
-subtitle: "Recursion"
 format:
-  html:
-    toc: true
-    number-sections: true
-    code-copy: true
+  revealjs:
+    theme: simple
+    slide-number: true
+    embed-resources: true 
+    scrollable: true
 ---
 
 
-::: {style="background-image: url('images/recursion-img.jpg'); background-size: cover; padding: 1em;"}
 
+![](images/recursion-img.jpg){width=100%}
 
-:::
 
 ## What is recursion?
 
-[Can we google this?](www.google.com)
+[Can we google this?](https://www.google.com)
 
 
 ---
@@ -124,7 +123,11 @@ long factorial(int n) {
 :::
 ::::
 
-Both are correct. Which one is easier to read? Which one matches the math definition?
+Both are correct. 
+
+Which one is easier to read? 
+
+Which one matches the math definition?
 
 ## What happens if we never reach a base case?
 
@@ -143,6 +146,7 @@ Exception in thread "main" java.lang.StackOverflowError
 
 ---
 
+
 ![No base case](images/recursion-meme.jpg)
 
 
@@ -159,6 +163,7 @@ int f(int n) {
 ```
 
 **No progress toward the base case**
+
 
 ```java
 int f(int n) {
@@ -189,9 +194,19 @@ int f(int n) {
 
 Each number is the sum of the two before it.
 
-- What is the base case?
-- What is the recursive case?
-- Write `fib(n)`.
+ - What is the base case?
+ - What is the recursive case?
+ - Write `fib(n)`.
+
+```
+fib(n):
+    if n < 2:
+        return n
+    else:
+        return fib(n - 1) + fib(n - 2)
+```
+
+---
 
 ::: {.callout-tip collapse="true"}
 ## Answer
@@ -234,7 +249,11 @@ for n from 0 to 8:
     print n, result, calls
 ```
 
-::: {.callout-tip collapse="true"}
+
+---
+
+
+
 ## Answer
 
 | n  | fib(n) | calls | ratio                  |
@@ -262,7 +281,7 @@ for n from 0 to 8:
 | 20 | 6765   | 21891 | 21891/13529 = 1.62     |
 
 Pattern: calls(n) = 1.62^n (exponential function)
-:::
+
 
 
 ## How fast does it grow?
@@ -286,8 +305,6 @@ Which calls are repeated?
 # Memoization
 
 **Memoization** means saving the result of a function call, so the next time the same call comes up, you **look the answer up** instead of computing it again.
-
-How to do it:
 
 1. Create an array `memo` to hold answers (all 0 = nothing computed yet).
 2. Before computing, check `memo[n]`. If it already has an answer, return it.
@@ -388,8 +405,9 @@ for n from 0 to MAX_N:
 
 **Can you find the recursive pattern?**
 
+*Are you familiar with LinkedList?*
 
-# Another Recursion
+# Another Recursion (next class)
 
 ## Activity: Guessing game
 
