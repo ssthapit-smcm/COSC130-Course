@@ -1,0 +1,664 @@
+---
+title: "Collections"
+author: "Sandeep Sthapit"
+format:
+  revealjs:
+    theme: default
+    slide-number: true
+    code-line-numbers: false
+    highlight-style: atom-one
+    width: 1050
+    height: 700
+    chalkboard: true
+    menu: true
+---
+
+# Part 1: Arrays Review
+
+## What We Already Know
+
+An **array** stores a group of values of the same type.
+
+```java
+String[] students = new String[3];
+students[0] = "Alice";
+students[1] = "Bob";
+students[2] = "Charlie";
+
+System.out.println(students[1]);      // Bob
+System.out.println(students.length);  // 3
+```
+
+- Access by **index**: `students[i]`
+- Size with **`.length`**
+- Can hold primitives (`int[]`) or objects (`String[]`)
+
+## Limitation 1: Fixed Size
+
+Once an array is created, its size **cannot change**.
+
+```java
+String[] students = new String[3];
+// ... filled with Alice, Bob, Charlie
+
+students[3] = "David";   //  ArrayIndexOutOfBoundsException
+```
+
+::: {.fragment}
+To "grow" an array, we must do it **by hand**:
+
+```java
+String[] bigger = new String[students.length + 1];
+for (int i = 0; i < students.length; i++) {
+    bigger[i] = students[i];
+}
+bigger[3] = "David";
+students = bigger;
+```
+:::
+
+## Limitation 2: Removing Is Painful
+
+Remove `"Bob"` from `{"Alice", "Bob", "Charlie", "David"}`:
+
+```java
+// Shift everything after index 1 one spot to the left
+for (int i = 1; i < students.length - 1; i++) {
+    students[i] = students[i + 1];
+}
+students[students.length - 1] = null;  // now there's an empty slot
+```
+
+::: {.incremental}
+- We had to write the shifting loop ourselves
+- The array is still the same size, with a `null` at the end
+- Now `.length` no longer tells us how many students we *actually* have
+:::
+
+## Limitation 3: No Built-in Helpers
+
+Want to know if `"Charlie"` is in the array? Write a loop.
+
+```java
+boolean found = false;
+for (String s : students) {
+    if (s != null && s.equals("Charlie")) {
+        found = true;
+    }
+}
+```
+
+Arrays have **no methods** like *add*, *remove*, or *contains*.
+
+## Arrays: Summary of Limitations
+
+| Task | With an array |
+|---|---|
+| Add an item in a full array | Make a new array and copy |
+| Remove an item | Shift elements by hand |
+| How many items are used? | Track a separate counter |
+| Is X in here? | Write a search loop |
+
+
+
+# Part 2: Collection
+
+## What Is a Collection?
+
+A **collection** is an object that groups together other objects.
+
+- A class roster: a group of `Student`s
+- A playlist: a group of `Song`s
+- A shopping cart: a group of `Item`s
+
+::: {.fragment}
+We've already used one collection: the **array**.
+`String[]` is a collection of `String`s.
+:::
+
+
+## Abstract Data Type (ADT)
+
+An **ADT** describes **what** a collection does (its *behaviors*) without saying how.
+
+**Example: the List ADT**
+
+> An ordered sequence of items, where each item has a position (index).
+
+Behaviors:
+
+- add an item
+- get the item at a position
+- change the item at a position
+- remove an item
+- ask how many items there are
+
+::: {.fragment}
+**Question:** What Java feature have we used that lists behaviors *without* saying how they work?
+:::
+
+::: {.fragment}
+**An interface!** It declares method signatures with no bodies. The classes that implement it supply the "how."
+:::
+
+## Data Structure
+
+A **data structure** is a concrete way of **storing** data to make an ADT work.
+The **same** ADT can be built with **different** data structures:
+
+```{mermaid}
+%%| fig-width: 8
+classDiagram
+    class List {
+        <<interface>>
+        +add(item)
+        +get(index)
+        +set(index, item)
+        +remove(index)
+        +size() int
+    }
+    class ArrayList {
+        -items : array
+        -count : int
+    }
+    class LinkedList {
+        -head : Node
+        -count : int
+    }
+    List <|.. ArrayList
+    List <|.. LinkedList
+```
+
+::: {.fragment}
+Code that uses a `List` looks the **same** whichever one you pick!
+:::
+
+
+### In Java: the ADT is usually an **interface**, and the data structure is a **class** that implements it.
+
+
+## Example: The Stack ADT
+
+**Stack ADT:** last in, first out (like a stack of plates)
+
+- `push(item)`: put an item on top
+- `pop()`: remove and return the top item
+- `peek()`: look at the top item without removing it
+- `isEmpty()`: are there any items?
+
+:::: {.columns}
+
+::: {.column width="50%"}
+**Data structure 1: Array**
+
+```
+index:  0    1    2    3
+      [ A ][ B ][ C ][   ]
+                  ↑
+                 top
+```
+Top is the last filled slot.
+:::
+
+::: {.column width="50%"}
+**Data structure 2: Linked list**
+
+```
+top → [ C ] → [ B ] → [ A ] → null
+```
+Top is the first node.
+:::
+
+::::
+
+::: {.fragment}
+`push("D")` puts D on top in **both**. Same behavior, different storage.
+:::
+
+# Part 3: ArrayList
+
+## `ArrayList`: A List Built on an Array
+
+`ArrayList` is a class from the Java library that implements the **List ADT** using an array behind the scenes.
+
+:::: {.columns}
+
+::: {.column width="45%"}
+- Grows automatically when you add items
+- Shifts items for you when you remove
+- Keeps track of how many items it has
+- Comes with helpful methods
+:::
+
+::: {.column width="55%"}
+```{mermaid}
+%%| fig-width: 5
+classDiagram
+    class List {
+        <<interface>>
+        +add(item)
+        +get(index)
+        +set(index, item)
+        +remove(index)
+        +size() int
+    }
+    class ArrayList {
+        -elementData : Object[]
+        -size : int
+        +add(item)
+        +get(index)
+        +set(index, item)
+        +remove(index)
+        +size() int
+    }
+    List <|.. ArrayList
+```
+:::
+
+::::
+
+
+## Creating an `ArrayList`
+
+```java
+import java.util.ArrayList;
+
+ArrayList<String> animals = new ArrayList<>();
+```
+
+::: {.incremental}
+- `ArrayList` is a **class**, so we create one with `new`
+- The `<String>` says **what type of item** the list holds
+- `ArrayList<String>` holds Strings; `ArrayList<Student>` holds Students
+- The empty `<>` on the right lets Java fill in the type for us
+:::
+
+::: {.fragment}
+*For now, just read `ArrayList<String>` as "ArrayList of Strings." We'll cover generics later*
+:::
+
+## Mixing Types? The Compiler Says No
+
+```java
+ArrayList<String> animals = new ArrayList<>();
+
+animals.add("Cat");   // OK
+animals.add(42);      // COMPILER ERROR: 42 is not a String
+```
+
+Because we declared the list holds Strings, Java checks **every** `add` for us *before* the program runs.
+
+# Part 4: ArrayList Methods
+
+## Adding: `add`
+
+```java
+ArrayList<String> animals = new ArrayList<>();
+
+animals.add("Cat");        // [Cat]
+animals.add("Dog");        // [Cat, Dog]
+animals.add("Owl");        // [Cat, Dog, Owl]
+
+animals.add(2, "Fox");     // insert at index 2
+                           // [Cat, Dog, Fox, Owl]
+```
+
+- `add(item)` puts the item at the **end**
+- `add(index, item)` **inserts** and shifts later items right
+
+## Reading: `get` and `size`
+
+```java
+String first = animals.get(0);     // "Cat"
+String third = animals.get(2);     // "Fox"
+
+int count = animals.size();        // 4
+```
+
+| Array | ArrayList |
+|---|---|
+| `arr[i]` | `list.get(i)` |
+| `arr.length` | `list.size()` |
+
+::: {.fragment}
+⚠️ `animals.get(10)` → `IndexOutOfBoundsException`, just like arrays.
+:::
+
+## Changing: `set`
+
+```java
+// [Cat, Dog, Fox, Owl]
+animals.set(0, "Tiger");
+// [Tiger, Dog, Fox, Owl]
+```
+
+`set` **replaces** — the size does not change.
+
+::: {.fragment}
+Compare: `add(0, "Yak")` would **insert** and make the list longer.
+:::
+
+## Removing: `remove`
+
+Two versions:
+
+```java
+// [Cat, Dog, Fox, Owl]
+
+animals.remove(1);         // remove by INDEX
+// [Cat, Fox, Owl]
+
+animals.remove("Owl");     // remove by VALUE
+// [Cat, Fox]
+```
+
+Items after the removed one **shift left** automatically.
+
+## Searching: `contains` and `indexOf`
+
+```java
+// [Cat, Fox]
+
+animals.contains("Cat");    // true
+animals.contains("Yak");    // false
+
+animals.indexOf("Fox");     // 1
+animals.indexOf("Yak");     // -1  (not found)
+```
+
+No more writing search loops by hand!
+
+## Other Useful Methods
+
+```java
+animals.isEmpty();     // true if size() == 0
+animals.clear();       // removes everything
+
+System.out.println(animals);   // prints like [Cat, Fox]
+```
+
+## Looping Over an `ArrayList`
+
+:::: {.columns}
+
+::: {.column width="50%"}
+**For-each** (when you just need the items)
+
+```java
+for (String animal : animals) {
+    System.out.println(animal);
+}
+```
+:::
+
+::: {.column width="50%"}
+**Index loop** (when you need the position)
+
+```java
+for (int i = 0; i < animals.size(); i++) {
+    System.out.println(i + ": " + animals.get(i));
+}
+```
+:::
+
+::::
+
+::: {.fragment}
+⚠️ Don't `add` or `remove` inside a for-each loop over the same list — Java throws a `ConcurrentModificationException`.
+:::
+
+## Method Cheat Sheet
+
+| Method | What it does |
+|---|---|
+| `add(item)` | add to end |
+| `add(i, item)` | insert at index `i` |
+| `get(i)` | item at index `i` |
+| `set(i, item)` | replace item at index `i` |
+| `remove(i)` | remove at index `i` |
+| `remove(item)` | remove first match |
+| `size()` | number of items |
+| `contains(item)` | is it in the list? |
+| `indexOf(item)` | position, or `-1` |
+| `isEmpty()` / `clear()` | empty check / empty out |
+
+## Array vs. `ArrayList`
+
+| | Array | `ArrayList` |
+|---|---|---|
+| Size | Fixed | Grows and shrinks |
+| Get item | `arr[i]` | `list.get(i)` |
+| Change item | `arr[i] = x` | `list.set(i, x)` |
+| Count | `arr.length` | `list.size()` |
+| Add to end | Copy into new array | `list.add(x)` |
+| Remove | Shift by hand | `list.remove(i)` |
+| Primitives? | ✅ `int[]` | ❌ — see next part |
+
+# Part 5: Autoboxing
+
+## Can We Make a List of `int`s?
+
+```java
+ArrayList<int> scores = new ArrayList<>();   // COMPILER ERROR!
+```
+
+::: {.incremental}
+- Collections can only hold **objects** (reference types)
+- `int`, `double`, `boolean`, `char` are **primitives**, not objects
+- Java provides a **wrapper class** for each primitive
+:::
+
+## Wrapper Classes
+
+| Primitive | Wrapper class |
+|---|---|
+| `int` | `Integer` |
+| `double` | `Double` |
+| `boolean` | `Boolean` |
+| `char` | `Character` |
+
+```java
+ArrayList<Integer> scores = new ArrayList<>();   // works!
+```
+
+An `Integer` is an object that "wraps" a single `int` value inside it.
+
+## Autoboxing and Unboxing
+
+Java converts between primitives and wrappers **automatically**.
+
+```java
+ArrayList<Integer> scores = new ArrayList<>();
+
+scores.add(95);              // autoboxing:  int 95  -> Integer
+scores.add(88);
+
+int first = scores.get(0);   // unboxing:    Integer -> int 95
+
+int total = scores.get(0) + scores.get(1);   // unboxing, then add
+```
+
+- **Autoboxing:** primitive → wrapper object
+- **Unboxing:** wrapper object → primitive
+
+## Gotcha 1: `remove` with Integers
+
+```java
+ArrayList<Integer> nums = new ArrayList<>();
+nums.add(10);
+nums.add(20);
+nums.add(30);
+
+nums.remove(1);   // what gets removed?
+```
+
+::: {.fragment}
+**`20`** — the item at **index** 1. An `int` argument means "remove by index."
+
+To remove the **value** 1 (or 10, 20...), make it an object:
+
+```java
+nums.remove(Integer.valueOf(10));   // removes the value 10
+```
+:::
+
+## Gotcha 2: Comparing with `==`
+
+```java
+ArrayList<Integer> a = new ArrayList<>();
+a.add(500);
+a.add(500);
+
+System.out.println(a.get(0) == a.get(1));       // false (!)
+System.out.println(a.get(0).equals(a.get(1)));  // true
+```
+
+::: {.fragment}
+`==` on two objects checks if they are the **same object**, not the same value.
+
+**Rule:** compare wrapper objects with `.equals()` — just like Strings.
+:::
+
+## Gotcha 3: Unboxing `null`
+
+```java
+ArrayList<Integer> scores = new ArrayList<>();
+scores.add(null);           // allowed: null is a valid object reference
+
+int s = scores.get(0);      // CRASH! NullPointerException
+```
+
+There's no `int` value inside `null` to unbox.
+
+## Check Your Understanding
+
+Mark each line: **autoboxing**, **unboxing**, or **neither**.
+
+```java
+ArrayList<Double> prices = new ArrayList<>();
+prices.add(4.99);                      // (a)
+double p = prices.get(0);              // (b)
+Double q = prices.get(0);              // (c)
+double total = prices.get(0) * 2;      // (d)
+```
+
+::: {.fragment}
+(a) autoboxing &nbsp; (b) unboxing &nbsp; (c) neither &nbsp; (d) unboxing
+:::
+
+# Part 6: Other Collections
+
+## The Java Collections Framework
+
+`ArrayList` is just one member of a family in `java.util`.
+
+| ADT (interface) | Idea | Common classes |
+|---|---|---|
+| [`List`](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html) | ordered, by index, duplicates OK | [`ArrayList`](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/ArrayList.html), [`LinkedList`](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/LinkedList.html) |
+| [`Set`](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Set.html) | no duplicates | [`HashSet`](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/HashSet.html), [`TreeSet`](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/TreeSet.html) |
+| [`Map`](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Map.html) | key → value pairs | [`HashMap`](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/HashMap.html), [`TreeMap`](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/TreeMap.html) |
+| [`Queue`](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Queue.html) | first in, first out | [`LinkedList`](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/LinkedList.html), [`ArrayDeque`](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/ArrayDeque.html) |
+
+All are in `java.util`: [package overview](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/package-summary.html)
+
+## Main Operations
+
+## Main Operations
+
+| ADT | Main operations |
+|---|---|
+| `List` | `add(item)`, `get(index)`, `set(index, item)`, `remove(index)` |
+| `Set` | `add(item)`, `remove(item)`, `contains(item)` |
+| `Map` | `put(key, value)`, `get(key)`, `remove(key)` |
+| `Queue` | enqueue → `offer(item)`, dequeue → `poll()`, `peek()` |
+
+All of them also have `size()` and `isEmpty()`.
+
+
+## Back to ADT vs. Data Structure
+
+`List` is the **ADT** (an interface). `ArrayList` and `LinkedList` are two **data structures** that implement it.
+
+```java
+List<String> names = new ArrayList<>();
+// List<String> names = new LinkedList<>();   // swap in, same code below!
+
+names.add("Alice");
+names.add("Bob");
+System.out.println(names.get(1));
+```
+
+::: {.fragment}
+Declaring the variable as `List` says "I only care about the **behaviors**."
+:::
+
+## `Set`: Unique Items
+
+```java
+import java.util.HashSet;
+import java.util.Set;
+
+Set<String> visitors = new HashSet<>();
+visitors.add("Alice");
+visitors.add("Bob");
+visitors.add("Alice");          // ignored, already there
+
+System.out.println(visitors.size());           // 2
+System.out.println(visitors.contains("Bob"));  // true
+```
+
+- No duplicates
+- No index — there is no `get(i)`
+- Order is not guaranteed
+
+## `Map`: Look Up by Key
+
+```java
+import java.util.HashMap;
+import java.util.Map;
+
+Map<String, Integer> ages = new HashMap<>();
+ages.put("Alice", 20);
+ages.put("Bob", 22);
+ages.put("Alice", 21);          // replaces Alice's age
+
+System.out.println(ages.get("Alice"));    // 21
+System.out.println(ages.get("Zoe"));      // null
+```
+
+- Each **key** is unique; it maps to one **value**
+- Like a dictionary: word → definition
+
+## Choosing a Collection
+
+Ask yourself:
+
+::: {.incremental}
+- Do I need items **in order** or by **position**? → `List`
+- Do I need to avoid **duplicates**? → `Set`
+- Do I need to **look up** a value by something like a name or ID? → `Map`
+:::
+
+
+# Programming Challenge
+
+## Grade Book
+
+1. Create an `ArrayList<Integer>` called `grades`.
+2. Add the grades `85`, `92`, `78`, `92`, `60`.
+3. Print the number of grades and the full list.
+4. Use a loop to compute and print the **average**.
+5. Remove the grade at index 4. Then remove the **value** `78`.
+6. Change the first grade to `88` using `set`.
+7. Print whether the list `contains` `100`.
+8. **Bonus:** Put the grades into a `HashSet<Integer>`. How many *unique* grades are there?
+
+## Summary
+
+- **Arrays** are fixed size and have no built-in helper methods
+- An **ADT** describes *what* a collection does; a **data structure** is *how* it's stored
+- **`ArrayList`** implements the List ADT and grows automatically
+- Key methods: `add`, `get`, `set`, `remove`, `size`, `contains`, `indexOf`
+- **Autoboxing** lets collections hold primitive values through wrapper classes
+  - Watch out for `remove(int)`, `==`, and `null`
+- Other collections: **`Set`** (unique), **`Map`** (key → value), **`Queue`** (FIFO)
