@@ -3,14 +3,10 @@ title: "Collections"
 author: "Sandeep Sthapit"
 format:
   revealjs:
-    theme: default
+    theme: simple
     slide-number: true
-    code-line-numbers: false
-    highlight-style: atom-one
-    width: 1050
-    height: 700
-    chalkboard: true
-    menu: true
+    embed-resources: true 
+    scrollable: true
 ---
 
 # Part 1: Arrays Review
@@ -45,7 +41,7 @@ students[3] = "David";   //  ArrayIndexOutOfBoundsException
 ```
 
 ::: {.fragment}
-To "grow" an array, we must do it **by hand**:
+To "grow" an array, we must do it **manually**:
 
 ```java
 String[] bigger = new String[students.length + 1];
@@ -77,12 +73,12 @@ students[students.length - 1] = null;  // now there's an empty slot
 
 ## Limitation 3: No Built-in Helpers
 
-Want to know if `"Charlie"` is in the array? Write a loop.
+Want to know if `"Izzy"` is in the array? Write a loop.
 
 ```java
 boolean found = false;
 for (String s : students) {
-    if (s != null && s.equals("Charlie")) {
+    if (s != null && s.equals("Izzy")) {
         found = true;
     }
 }
@@ -95,7 +91,7 @@ Arrays have **no methods** like *add*, *remove*, or *contains*.
 | Task | With an array |
 |---|---|
 | Add an item in a full array | Make a new array and copy |
-| Remove an item | Shift elements by hand |
+| Remove an item | Shift elements manually |
 | How many items are used? | Track a separate counter |
 | Is X in here? | Write a search loop |
 
@@ -113,6 +109,8 @@ A **collection** is an object that groups together other objects.
 
 ::: {.fragment}
 We've already used one collection: the **array**.
+
+
 `String[]` is a collection of `String`s.
 :::
 
@@ -366,7 +364,7 @@ animals.indexOf("Fox");     // 1
 animals.indexOf("Yak");     // -1  (not found)
 ```
 
-No more writing search loops by hand!
+No more writing search loops manually!
 
 ## Other Useful Methods
 
@@ -431,7 +429,7 @@ for (int i = 0; i < animals.size(); i++) {
 | Change item | `arr[i] = x` | `list.set(i, x)` |
 | Count | `arr.length` | `list.size()` |
 | Add to end | Copy into new array | `list.add(x)` |
-| Remove | Shift by hand | `list.remove(i)` |
+| Remove | Shift manually | `list.remove(i)` |
 | Primitives? | ✅ `int[]` | ❌ — see next part |
 
 # Part 5: Autoboxing
